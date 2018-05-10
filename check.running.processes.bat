@@ -77,7 +77,7 @@ EXIT /B 0
 :SUB_loadlist
 
 ECHO CHECKING processes
-FOR /F "delims=;" %%A IN (sample.monitored.processes.txt) DO (
+FOR /F "delims=;" %%A IN (monitored.processes.txt) DO (
     CALL:SUB_checkrunning "%%A"
 )
 EXIT /B 0
