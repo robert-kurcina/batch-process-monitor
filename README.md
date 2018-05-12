@@ -8,13 +8,15 @@ Overview:
 Here's a sample list of processes pulled from the DOS command ```tasklist``` .
 
 This creates the following;
-> NewtecModulatorElmManager
-> NMX Designer.exe
-> NMX Operator.exe
-> NmxNgServerController.exe
-> NMXValidatorService.exe
-> NsgStatManager.exe
-> ProViewElmManagerModule.e
+```
+NewtecModulatorElmManager
+NMX Designer.exe
+NMX Operator.exe
+NmxNgServerController.exe
+NMXValidatorService.exe
+NsgStatManager.exe
+ProViewElmManagerModule.e
+```
 
 ```NOTE: the processes names are clipped here.```
 From the DOS prompt, the process names are truncated to 25 characters in length. Additionally, some of the process names contain spaces. This may cause a problem in finding a matching entry on the task list.
