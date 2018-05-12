@@ -55,7 +55,7 @@ EXIT /B %ERRORLEVEL%
 :SUB_checkrunning
 
 SET processname=%~1%
-TASKLIST /FI "IMAGENAME eq %processname%" 2>NUL | FIND /I /N "%processname%">NUL
+TASKLIST /FO LIST | find "%processname%" | FIND /I /N "%processname%">NUL
 
 IF "%ERRORLEVEL%" EQU "0" (
   ECHO - %processname% is RUNNING!!
