@@ -5,7 +5,7 @@
 :: Name:       check.running.processes.bat
 :: Purpose:    write output list for all processes from input list not running
 :: Author:     Robert Kurcina https://github.com/robert-kurcina
-:: Revision:   2018-05-09 at 1634 PST
+:: Revision:   2018-05-31 at 2239 PST
 ::
 :: GIVEN
 :: -------------------------
@@ -29,24 +29,17 @@ SET me=~%n0
 ::-------------------------------------------------------------------
 :: entry point for re-running the script
 ::-------------------------------------------------------------------
-:GLOBAL_loop
-
 SET ID=0
+SET exit_value=0
+
 CALL:SUB_loadlist
 CALL:SUB_console
-CALL:SUB_writefile
 ENDLOCAL
-
-::-------------------------------------------------------------------
-:: loop routine
-::-------------------------------------------------------------------
-::TIMEOUT 300 /NOBREAK
-::GOTO:GLOBAL_loop
 
 ::-------------------------------------------------------------------
 :: force execution to quit at the end of the "main" logic
 ::-------------------------------------------------------------------
-EXIT /B %ERRORLEVEL%
+EXIT /B %exit_value%
 
 
 ::===================================================================
@@ -58,13 +51,14 @@ SET processname=%~1%
 TASKLIST /FO LIST | find "%processname%" | FIND /I /N "%processname%">NUL
 
 IF "%ERRORLEVEL%" EQU "0" (
-  ECHO - %processname% is RUNNING!!
+  ECHO -RUNNING: %processname%
 )
 
 IF "%ERRORLEVEL%" NEQ "0" (
   SET /A ID=ID+1
   SET stopped[%ID%]=%processname%
-  ECHO - %processname% is STOPPED!!
+  SET exit_value=2
+  ECHO -STOPPED: %processname%
 )
 
 EXIT /B 0
@@ -76,7 +70,8 @@ EXIT /B 0
 ::-------------------------------------------------------------------
 :SUB_loadlist
 
-ECHO CHECKING processes
+ECHO.
+ECHO - CHECKING processes
 FOR /F "delims=;" %%A IN (monitored.processes.txt) DO (
     CALL:SUB_checkrunning "%%A"
 )
@@ -88,24 +83,14 @@ EXIT /B 0
 ::-------------------------------------------------------------------
 :SUB_console
 
-ECHO STOPPED processes
-FOR /L %%n IN (1,1,%ID%) DO (
-   ECHO - !stopped[%%n]!
-)
+ECHO.
 
-EXIT /B 0
-
-
-::===================================================================
-:: output the stopped list to hard-disk
-::-------------------------------------------------------------------
-:SUB_writefile
-
-ECHO WRITE processes
-IF EXIST stopped.processes.txt DEL stopped.processes.txt
-FOR /L %%n IN (0,1,%ID%) DO (
-  SET str=!stopped[%%n]!
-  IF DEFINED str ECHO !stopped[%%n]! >> stopped.processes.txt
+IF "%exit_value%" NEQ "0" (
+  ECHO STOPPED:
+  FOR /L %%n IN (0,1,%ID%) DO (
+     SET str=!stopped[%%n]!
+     IF DEFINED str ECHO !stopped[%%n]!
+  )
 )
 
 EXIT /B 0
