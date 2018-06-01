@@ -51,14 +51,14 @@ SET processname=%~1%
 TASKLIST /FO LIST | find "%processname%" | FIND /I /N "%processname%">NUL
 
 IF "%ERRORLEVEL%" EQU "0" (
-  ECHO -RUNNING: %processname%
+  ECHO RUNNING: %processname%
 )
 
 IF "%ERRORLEVEL%" NEQ "0" (
   SET /A ID=ID+1
   SET stopped[%ID%]=%processname%
   SET exit_value=2
-  ECHO -STOPPED: %processname%
+  ECHO STOPPED: %processname%
 )
 
 EXIT /B 0
@@ -71,10 +71,11 @@ EXIT /B 0
 :SUB_loadlist
 
 ECHO.
-ECHO - CHECKING processes
+ECHO CHECKING processes
 FOR /F "delims=;" %%A IN (monitored.processes.txt) DO (
     CALL:SUB_checkrunning "%%A"
 )
+
 EXIT /B 0
 
 
